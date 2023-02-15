@@ -20,6 +20,7 @@ pieces <- {
       within({
         no = 1:8
         alive = TRUE
+        position = list(c("a",2), c("b",2),c("c",2),c("d",2),c("e",2),c("f",2),c("g",2),c("h",2))
         turn_count = 0
       }),
     black_pawns = board |>
@@ -27,6 +28,7 @@ pieces <- {
       within({
         no = 1:8
         alive = TRUE
+        position = list(c("a",7), c("b",7),c("c",7),c("d",7),c("e",7),c("f",7),c("g",7),c("h",7))
         turn_count = 0
       }),
     white_castles = board |>
@@ -34,6 +36,7 @@ pieces <- {
       within({
         no = 1:2
         alive = TRUE
+        position = list(c("a",1), c("h",1))
         turn_count = 0
       }),
     black_castles = board |>
@@ -41,6 +44,7 @@ pieces <- {
       within({
         no = 1:2
         alive = TRUE
+        position = list(c("a",8), c("h",8))
         turn_count = 0
       }),
     white_knights = board |>
@@ -48,6 +52,7 @@ pieces <- {
       within({
         no = 1:2
         alive = TRUE
+        position = list(c("b",1), c("g",1))
         turn_count =0
       }),
     black_knights = board |>
@@ -55,6 +60,7 @@ pieces <- {
       within({
         no = 1:2
         alive = TRUE
+        position = list(c("b",8), c("g",8))
         turn_count =0
       }),
     white_bishops = board |>
@@ -62,6 +68,7 @@ pieces <- {
       within({
         no = 1:2
         alive = TRUE
+        position = list(c("c",1), c("f",1))
         turn_count =0
       }),
     black_bishops = board |>
@@ -69,6 +76,7 @@ pieces <- {
       within({
         no = 1:2
         alive=TRUE
+        position = list(c("c",8), c("f",8))
         turn_count=0
       }),
     white_queen = board |> 
@@ -76,6 +84,7 @@ pieces <- {
       within({
         no = 1
         alive=TRUE
+        position = list(c("d",1))
         turn_count=0
       }),
     black_queen = board |> 
@@ -83,6 +92,7 @@ pieces <- {
       within({
         no = 1
         alive=TRUE
+        position = list(c("d",8))
         turn_count=0
       }),
     white_king = board |> 
@@ -90,17 +100,42 @@ pieces <- {
       within({
         no = 1
         check=FALSE
+        position = list(c("e",1))
         turn_count=0
       }),
     black_king = board |> 
       subset(Var2 == 8 & Var1 == letters[5]) |>
       within({
         no = 1
+        position = list(c("d",8))
         check=FALSE
         turn_count=0
       })
   )
 }
+
+validate_move_syntax <- function(move){
+  check<-grepl("^((?:[KQRBN])|)[a-h][1-8]$",move)
+  return(check)
+}
+
+get_player_move <- function(player){
+  prompt <- paste(player, "'s Turn:", sep='', collapse='')
+  
+  move<-readline(prompt)
+  
+  # Recursive solution
+  
+  # Check for valid move
+  if(validate_move_syntax(move)){
+    return(move)
+  } else{
+    cat("Invalid Move. Please use algebraic notation for making moves.")
+    get_player_move(player)
+  }
+}
+
+
 plot_board<- function(board,
                       pieces){
   
@@ -178,29 +213,8 @@ plot_board<- function(board,
     theme(legend.position = "none")
 }
 
-
-validate_move_syntax <- function(move){
-  check<-grepl("^((?:[KQRBN])|)[a-h][1-8]$",move)
-  return(check)
-}
-
-get_player_move <- function(player){
-  prompt <- paste(player, "'s Turn:", sep='', collapse='')
-  
-  move<-readline(prompt)
-  
-  # Recursive solution
-  
-  # Check for valid move
-  if(validate_move_syntax(move)){
-    return(move)
-  } else{
-    cat("Invalid Move")
-    get_player_move(player)
-  }
-}
-
-parse_move <- function(move){
+# STILL NEED TO WORK ON
+parse_move <- function(player,move){
   parsed_move <- strsplit(move,"")[[1]]
   if(length(parsed_move)==2){
     piece <- "pawn"
@@ -216,19 +230,23 @@ parse_move <- function(move){
     col <- parsed_move[2]
     row <- parsed_move[3]
   }
-  
-  return(list(piece,col,row))
+  # Check move legality here
+  return(list("piece"=piece,
+              "col"=col,
+              "row"=row))
 }
 
-check_legal_move<- function(parsed_move){
+check_move_legality<- function(player,parsed_move){
   
+  piece <- parsed_move[["piece"]]
+  
+  if(player=="White"){
   switch(piece,
          "pawn" = {
-           if(player =="White")
              return(TRUE)
          },
          
-         "castle" = {
+         "rook" = {
            return(TRUE)
          },
          
@@ -246,20 +264,34 @@ check_legal_move<- function(parsed_move){
            return(TRUE)
          }
          
-  )
+  )}else{
+    switch(piece,
+           "pawn" = {
+             return(TRUE)
+           },
+           
+           "rook" = {
+             return(TRUE)
+           },
+           
+           "knight" = {
+             return(TRUE)
+           },
+           
+           "bishop" = {
+             return(TRUE)
+           },
+           "queen" = {
+             return(TRUE)
+           },
+           "king" = {
+             return(TRUE)
+           }
+           
+    )
+  }
 }
 
-parse_player_move<- function(player, move, pieces){
-  parsed_move <-strsplit(move,split=" ")[[1]]
-  piece <- strparsed_move
-  
-  switch(piece,
-         "pawn"={},
-         ""={},
-         "pawn"={},
-         "pawn"={},
-         "pawn"={})
-}
 
 
 play_game <- function() {
@@ -267,23 +299,23 @@ play_game <- function() {
   quit <- FALSE
   
   # Initialize the game
-  plot_board(board,pieces) |> print() 
+  # plot_board(board,pieces) |> print() 
   
   while (quit == FALSE) {
     turn <- turn + 1
     player <- ifelse(turn %% 2 == 1, "White", "Black")
     move <- get_player_move(player)
+    # player is needed in parsed_move to check validity
+    parsed_move <- parse_move(player,move)
     if(move == "quit"){
       quit <- TRUE
       break
     }
-    pieces<-parse_player_move(player,move,pieces)
-    
     
     # Update the game
-    plot_board(board,pieces)|> 
-      print() 
-    
+    # plot_board(board,pieces)|> 
+    #   print() 
+    print(parsed_move)
   }
   cat("Game Concluded")
 }

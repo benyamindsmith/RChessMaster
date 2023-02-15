@@ -16,6 +16,7 @@ It doesn't work but I'm sharing it anyways.
 </details>
 
 
+<details>
 <summary>
 <h3>How to use the rChess engine</h3>
 </summary>

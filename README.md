@@ -12,6 +12,8 @@ An experimental chess engine written in R.
 
 Right now only liberal piece movement is available. Piece rules, capturing and castling needs to also be addressed.
 
+`main.R` is what "works" so far. `dev.R` is what I'm working on. 
+
 It doesn't work but I'm sharing it anyways.  
 </details>
 
@@ -21,7 +23,7 @@ It doesn't work but I'm sharing it anyways.
 <h3>How to use the rChess engine</h3>
 </summary>
 
-Right now nothing is packaged and the code is highly unstable so you will need to run the script in the R console. 
+Right now nothing is packaged and the code is highly unstable so you will need to run the `main.R` script in the R console. 
 
 The syntax right now is `piece no new_position`
 

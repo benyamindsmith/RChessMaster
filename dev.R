@@ -115,7 +115,7 @@ pieces <- {
 }
 
 validate_move_syntax <- function(move){
-  check<-grepl("^((?:[KQRBN])|)[a-h][1-8]$",move)
+  check<-grepl("(^((?:[KQRBN])|)[a-h][1-8]$)|(quit)",move)
   return(check)
 }
 

@@ -119,6 +119,119 @@ validate_move_syntax <- function(move){
   return(check)
 }
 
+
+# STILL NEED TO WORK ON
+parse_move <- function(player,move){
+  parsed_move <- strsplit(move,"")[[1]]
+  if(length(parsed_move)==2){
+    piece <- "pawn"
+    col <- parsed_move[1]
+    row <- parsed_move[2]
+  }else{
+    piece <- switch(parsed_move[1],
+                    "K"="king",
+                    "Q"="queen",
+                    "R"="rook",
+                    "B"="bishop",
+                    "N"="knight")
+    col <- parsed_move[2]
+    row <- parsed_move[3]
+  }
+  # Check move legality here
+  return(list("piece"=piece,
+              "col"=col,
+              "row"=row))
+}
+
+check_move_legality<- function(player,parsed_move){
+  
+  piece <- parsed_move[["piece"]]
+  col <- parsed_move[["col"]]
+  row <- parsed_move[["row"]] |> as.numeric()
+  
+  if(player=="White"){
+    switch(piece,
+           "pawn" = {
+             
+             pawn_selected<- subset(pieces[["white_pawns"]], 
+                                    (Var1==col&Var2==row-1)|
+                                      (Var1==col&Var2==row-2 & turn_count==0))
+             
+             
+             
+             if(nrow(pawn_selected)==0){
+               cat("Error: No white pawns found to legally allow such a move")
+               return(FALSE)
+             }else if(nrow(pawn_selected)>1){
+               cat("Error: More than one piece found. This is an issue with code logic")
+               return(FALSE)
+             }else{
+               # Update data and return to TRUE
+               return(TRUE)
+             }
+           },
+           
+           "rook" = {
+             return(TRUE)
+           },
+           
+           "knight" = {
+             return(TRUE)
+           },
+           
+           "bishop" = {
+             return(TRUE)
+           },
+           "queen" = {
+             return(TRUE)
+           },
+           "king" = {
+             return(TRUE)
+           }
+           
+    )}else{
+      switch(piece,
+             "pawn" = { 
+               
+               pawn_selected<- subset(pieces[["black_pawns"]], 
+                                      (Var1==col&Var2==row+1)|
+                                        (Var1==col&Var2==row+2 & turn_count==0))
+               
+               
+               
+               if(nrow(pawn_selected)==0){
+                 cat("Error: No black pawns found to legally allow such a move")
+                 return(FALSE)
+               }else if(nrow(pawn_selected)>1){
+                 cat("Error: More than one piece found. This is an issue with code logic")
+                 return(FALSE)
+               }else{
+                 return(TRUE)
+               }
+             },
+             
+             "rook" = {
+               return(TRUE)
+             },
+             
+             "knight" = {
+               return(TRUE)
+             },
+             
+             "bishop" = {
+               return(TRUE)
+             },
+             "queen" = {
+               return(TRUE)
+             },
+             "king" = {
+               return(TRUE)
+             }
+             
+      )
+    }
+}
+
 get_player_move <- function(player){
   prompt <- paste(player, "'s Turn:", sep='', collapse='')
   
@@ -128,7 +241,12 @@ get_player_move <- function(player){
   
   # Check for valid move
   if(validate_move_syntax(move)){
-    return(move)
+    parsed_move<- parse_move(player,move)
+    if(check_move_legality(player,parsed_move)){
+      return(move)
+    }else{
+      get_player_move(player)
+    }
   } else{
     cat("Invalid Move. Please use algebraic notation for making moves.")
     get_player_move(player)
@@ -213,85 +331,6 @@ plot_board<- function(board,
     theme(legend.position = "none")
 }
 
-# STILL NEED TO WORK ON
-parse_move <- function(player,move){
-  parsed_move <- strsplit(move,"")[[1]]
-  if(length(parsed_move)==2){
-    piece <- "pawn"
-    col <- parsed_move[1]
-    row <- parsed_move[2]
-  }else{
-    piece <- switch(parsed_move[1],
-                    "K"="king",
-                    "Q"="queen",
-                    "R"="rook",
-                    "B"="bishop",
-                    "N"="knight")
-    col <- parsed_move[2]
-    row <- parsed_move[3]
-  }
-  # Check move legality here
-  return(list("piece"=piece,
-              "col"=col,
-              "row"=row))
-}
-
-check_move_legality<- function(player,parsed_move){
-  
-  piece <- parsed_move[["piece"]]
-  
-  if(player=="White"){
-  switch(piece,
-         "pawn" = {
-             return(TRUE)
-         },
-         
-         "rook" = {
-           return(TRUE)
-         },
-         
-         "knight" = {
-           return(TRUE)
-         },
-         
-         "bishop" = {
-           return(TRUE)
-         },
-         "queen" = {
-           return(TRUE)
-         },
-         "king" = {
-           return(TRUE)
-         }
-         
-  )}else{
-    switch(piece,
-           "pawn" = {
-             return(TRUE)
-           },
-           
-           "rook" = {
-             return(TRUE)
-           },
-           
-           "knight" = {
-             return(TRUE)
-           },
-           
-           "bishop" = {
-             return(TRUE)
-           },
-           "queen" = {
-             return(TRUE)
-           },
-           "king" = {
-             return(TRUE)
-           }
-           
-    )
-  }
-}
-
 
 
 play_game <- function() {
@@ -305,12 +344,11 @@ play_game <- function() {
     turn <- turn + 1
     player <- ifelse(turn %% 2 == 1, "White", "Black")
     move <- get_player_move(player)
-    # player is needed in parsed_move to check validity
-    parsed_move <- parse_move(player,move)
     if(move == "quit"){
       quit <- TRUE
       break
     }
+    parsed_move <- parse_move(player,move)
     
     # Update the game
     # plot_board(board,pieces)|> 

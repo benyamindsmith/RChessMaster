@@ -140,16 +140,18 @@ pieces <- {
 }
 
 # For reference
-pieces_dataset <- do.call(rbind, pieces)
+pieces_dataset <- do.call(rbind, pieces) |>
+                  subset(select=-color)
 
 # white pieces
 
-white_pieces <- ""
+white_pieces <-subset(pieces_dataset, grepl("^white", piece))
 
 # black pieces
 
 
-white_pieces <- ""
+white_pieces <-subset(pieces_dataset, grepl("^black", piece))
+
 
 validate_move_syntax <- function(move){
   check<-grepl("(^((?:[KQRBN])|)[a-h][1-8]$)|(quit)",move)

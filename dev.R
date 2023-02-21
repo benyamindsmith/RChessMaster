@@ -139,6 +139,8 @@ pieces <- {
   )
 }
 
+############################################
+# These datasets are not used for anything presently 
 # For reference
 pieces_dataset <- do.call(rbind, pieces) |>
                   subset(select=-color)
@@ -152,6 +154,7 @@ white_pieces <-subset(pieces_dataset, grepl("^white", piece))
 
 white_pieces <-subset(pieces_dataset, grepl("^black", piece))
 
+################################################
 
 validate_move_syntax <- function(move){
   check<-grepl("(^((?:[KQRBN])|)[a-h][1-8]$)|(quit)",move)
@@ -160,7 +163,7 @@ validate_move_syntax <- function(move){
 
 
 
-# STILL NEED TO WORK ON
+
 parse_move <- function(player,move){
   parsed_move <- strsplit(move,"")[[1]]
   if(length(parsed_move)==2){
@@ -195,8 +198,7 @@ check_move_legality<- function(player,parsed_move){
              
              pawn_selected<- subset(pieces[["white_pawns"]], 
                                     (Var1==col&Var2==row-1)|
-                                      (Var1==col&Var2==row-2 & turn_count==0))
-             
+                                    (Var1==col&Var2==row-2 & turn_count==0))
              
              
              if(nrow(pawn_selected)==0){
@@ -272,7 +274,6 @@ check_move_legality<- function(player,parsed_move){
     }
 }
 
-
 get_player_move <- function(player){
   prompt <- paste(player, "'s Turn:", sep='', collapse='')
   
@@ -297,6 +298,7 @@ get_player_move <- function(player){
   }
   }
 }
+
 
 plot_board<- function(board,
                       pieces){
@@ -376,6 +378,36 @@ plot_board<- function(board,
 }
 
 
+
+# STILL NEED TO WORK ON
+update_board<- function(player,parsed_move){
+  
+  piece <- parsed_move[["piece"]]
+  col <- parsed_move[["col"]]
+  row <- parsed_move[["row"]] |> as.numeric()
+  if(player=="White"){
+    switch(parsed_move[["piece"]],
+           "pawn"={
+             pieces[["white_pawns"]]
+           },
+           "castle" = {},
+           "knight"={},
+           "bishop"={},
+           "queen"={},
+           "king" ={}
+    )
+  }else{
+    switch(parsed_move[["piece"]],
+           "pawn"={},
+           "castle" = {},
+           "knight"={},
+           "bishop"={},
+           "queen"={},
+           "king" ={}
+    )
+  }
+  
+}
 
 play_game <- function() {
   turn <- 0

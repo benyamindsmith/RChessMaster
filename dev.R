@@ -160,7 +160,7 @@ black_pieces <-subset(pieces_dataset, grepl("^black", piece))
 ################################################
 
 validate_move_syntax <- function(move){
-  check<-grepl("(^((?:[KQRBN])|)[a-h][1-8]$)|(quit)",move)
+  check<-grepl("(^((?:[KQRBN])|)(x|)[a-h][1-8]$)|(quit)",move)
   return(check)
 }
 
@@ -169,24 +169,38 @@ validate_move_syntax <- function(move){
 
 parse_move <- function(player,move){
   parsed_move <- strsplit(move,"")[[1]]
-  if(length(parsed_move)==2){
-    piece <- "pawn"
-    col <- parsed_move[1]
-    row <- parsed_move[2]
-  }else{
-    piece <- switch(parsed_move[1],
-                    "K"="king",
-                    "Q"="queen",
-                    "R"="rook",
-                    "B"="bishop",
-                    "N"="knight")
-    col <- parsed_move[2]
-    row <- parsed_move[3]
-  }
-  # Check move legality here
+  
+  switch(
+    length(parsed_move),
+         "2"= {
+           piece <- "pawn"
+           col <- parsed_move[1]
+           row <- parsed_move[2]
+           capture <- FALSE
+         },
+         "3"= {piece <- switch(parsed_move[1],
+                             "K"="king",
+                             "Q"="queen",
+                             "R"="rook",
+                             "B"="bishop",
+                             "N"="knight")
+              col <- parsed_move[2]
+              row <- parsed_move[3],
+              capture <- FALSE}
+         4= {piece <- switch(parsed_move[1],
+                             "K"="king",
+                             "Q"="queen",
+                             "R"="rook",
+                             "B"="bishop",
+                             "N"="knight")
+              col <- parsed_move[3]
+              row <- parsed_move[4]
+              capture <- FALSE})
   return(list("piece"=piece,
               "col"=col,
-              "row"=row))
+              "row"=row,
+              "capture" = capture
+              ))
 }
 
 check_move_legality<- function(player,parsed_move){
@@ -216,6 +230,8 @@ check_move_legality<- function(player,parsed_move){
                  return(TRUE)
                } else if(pawn_selected[["Var2"]]< row-1){
                  cat("Error: illegal pawn move")
+               }else{
+                 return(TRUE)
                }
                # Update data and return to TRUE
                
@@ -415,7 +431,7 @@ update_board<- function(player,parsed_move){
   }else{
     switch(parsed_move[["piece"]],
            "pawn"={
-             pieces[["black_pawns"]]<<- pieces[["white_pawns"]] %>% 
+             pieces[["black_pawns"]]<<- pieces[["black_pawns"]] %>% 
                mutate(Var1 = case_when(((Var1==col&Var2==row+1)|(Var1==col&Var2==row+2 & turn_count==0)) ~ col,
                                        TRUE ~ as.character(Var1)),
                       Var2 = case_when(((Var1==col&Var2==row+1)|(Var1==col&Var2==row+2 & turn_count==0)) ~ row,
@@ -437,6 +453,7 @@ play_game <- function() {
   turn <- 0
   quit <- FALSE
   
+  reset_board()
   # Initialize the game
   plot_board(board,pieces) |> print() 
   

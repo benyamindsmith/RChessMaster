@@ -160,7 +160,7 @@ black_pieces <-subset(pieces_dataset, grepl("^black", piece))
 ################################################
 
 validate_move_syntax <- function(move){
-  check<-grepl("(^((?:[KQRBN])|)(x|)[a-h][1-8]$)|(quit)",move)
+  check<-grepl("(^((?:[KQRBN][a-h])|)(x|)[a-h][1-8]$)|(quit)",move)
   return(check)
 }
 
@@ -170,8 +170,9 @@ validate_move_syntax <- function(move){
 parse_move <- function(player,move){
   parsed_move <- strsplit(move,"")[[1]]
   
+  parsed_length <- as.character(length(parsed_move))
   switch(
-    length(parsed_move),
+    parsed_length,
          "2"= {
            piece <- "pawn"
            col <- parsed_move[1]
@@ -179,23 +180,39 @@ parse_move <- function(player,move){
            capture <- FALSE
          },
          "3"= {piece <- switch(parsed_move[1],
+                             "a"="pawn",
+                             "b"="pawn",
+                             "c"="pawn",
+                             "d"="pawn",
+                             "e"="pawn",
+                             "f"="pawn",
+                             "g"="pawn",
+                             "h"="pawn",
                              "K"="king",
                              "Q"="queen",
                              "R"="rook",
                              "B"="bishop",
                              "N"="knight")
               col <- parsed_move[2]
-              row <- parsed_move[3],
-              capture <- FALSE}
-         4= {piece <- switch(parsed_move[1],
-                             "K"="king",
-                             "Q"="queen",
-                             "R"="rook",
-                             "B"="bishop",
-                             "N"="knight")
+              row <- parsed_move[3]
+              capture <- FALSE},
+         "4"= {piece <- switch(parsed_move[1],
+                               "a"="pawn",
+                               "b"="pawn",
+                               "c"="pawn",
+                               "d"="pawn",
+                               "e"="pawn",
+                               "f"="pawn",
+                               "g"="pawn",
+                               "h"="pawn",
+                               "K"="king",
+                               "Q"="queen",
+                               "R"="rook",
+                               "B"="bishop",
+                               "N"="knight")
               col <- parsed_move[3]
               row <- parsed_move[4]
-              capture <- FALSE})
+              capture <- TRUE})
   return(list("piece"=piece,
               "col"=col,
               "row"=row,
@@ -208,6 +225,7 @@ check_move_legality<- function(player,parsed_move){
   piece <- parsed_move[["piece"]]
   col <- parsed_move[["col"]]
   row <- parsed_move[["row"]] |> as.numeric()
+  capture <- parsed_move[["capture"]]
   
   if(player=="White"){
     switch(piece,

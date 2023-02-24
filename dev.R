@@ -228,70 +228,34 @@ check_move_legality<- function(player,parsed_move){
   capture <- parsed_move[["capture"]]
   
   if(player=="White"){
-    switch(piece,
-           "pawn" = {
-             
-             pawn_selected<- subset(pieces[["white_pawns"]], 
-                                    (Var1==col&Var2==row-1)|
-                                    (Var1==col&Var2==row-2 & turn_count==0))
-             
-             
-             if(nrow(pawn_selected)==0){
-               cat("Error: No white pawns found to legally allow such a move")
-               return(FALSE)
-             }else if(nrow(pawn_selected)>1){
-               cat("Error: More than one piece found. This is an issue with code logic")
-               return(FALSE)
-             }else{
-               # Check turn count
-               if(pawn_selected[["turn_count"]]==0){
-                 return(TRUE)
-               } else if(pawn_selected[["Var2"]]< row-1){
-                 cat("Error: illegal pawn move")
-               }else{
-                 return(TRUE)
-               }
-               # Update data and return to TRUE
-               
-             }
-           },
-           
-           "rook" = {
-             return(TRUE)
-           },
-           
-           "knight" = {
-             return(TRUE)
-           },
-           
-           "bishop" = {
-             return(TRUE)
-           },
-           "queen" = {
-             return(TRUE)
-           },
-           "king" = {
-             return(TRUE)
-           }
-           
-    )}else{
+    if(capture){
+      return("Capture Action Still Under Development")
+    }else{
       switch(piece,
-             "pawn" = { 
+             "pawn" = {
                
-               pawn_selected<- subset(pieces[["black_pawns"]], 
-                                      (Var1==col&Var2==row+1)|
-                                        (Var1==col&Var2==row+2 & turn_count==0))
-               
+               pawn_selected<- subset(pieces[["white_pawns"]], 
+                                      (Var1==col&Var2==row-1)|
+                                        (Var1==col&Var2==row-2 & turn_count==0))
                
                
                if(nrow(pawn_selected)==0){
-                 cat("Error: No black pawns found to legally allow such a move")
+                 cat("Error: No white pawns found to legally allow such a move")
                  return(FALSE)
                }else if(nrow(pawn_selected)>1){
                  cat("Error: More than one piece found. This is an issue with code logic")
                  return(FALSE)
                }else{
-                 return(TRUE)
+                 # Check turn count
+                 if(pawn_selected[["turn_count"]]==0){
+                   return(TRUE)
+                 } else if(pawn_selected[["Var2"]]< row-1){
+                   cat("Error: illegal pawn move")
+                 }else{
+                   return(TRUE)
+                 }
+                 # Update data and return to TRUE
+                 
                }
              },
              
@@ -314,6 +278,52 @@ check_move_legality<- function(player,parsed_move){
              }
              
       )
+    }
+    }else{
+      if(capture){
+        return("Capture Action Still Under Development")
+      }else{
+        switch(piece,
+               "pawn" = { 
+                 
+                 pawn_selected<- subset(pieces[["black_pawns"]], 
+                                        (Var1==col&Var2==row+1)|
+                                          (Var1==col&Var2==row+2 & turn_count==0))
+                 
+                 
+                 
+                 if(nrow(pawn_selected)==0){
+                   cat("Error: No black pawns found to legally allow such a move")
+                   return(FALSE)
+                 }else if(nrow(pawn_selected)>1){
+                   cat("Error: More than one piece found. This is an issue with code logic")
+                   return(FALSE)
+                 }else{
+                   return(TRUE)
+                 }
+               },
+               
+               "rook" = {
+                 return(TRUE)
+               },
+               
+               "knight" = {
+                 return(TRUE)
+               },
+               
+               "bishop" = {
+                 return(TRUE)
+               },
+               "queen" = {
+                 return(TRUE)
+               },
+               "king" = {
+                 return(TRUE)
+               }
+               
+        )
+      }
+  
     }
 }
 
@@ -428,41 +438,52 @@ update_board<- function(player,parsed_move){
   piece <- parsed_move[["piece"]]
   col <- parsed_move[["col"]]
   row <- parsed_move[["row"]] |> as.numeric()
+  capture <- parsed_move[["capture"]]
   if(player=="White"){
-    switch(parsed_move[["piece"]],
-           "pawn"={
-             
-             pieces[["white_pawns"]]<<- pieces[["white_pawns"]] %>% 
-               mutate(Var1 = case_when(((Var1==col&Var2==row-1)|(Var1==col&Var2==row-2 & turn_count==0)) ~ col,
-                                       TRUE ~ as.character(Var1)),
-                      Var2 = case_when(((Var1==col&Var2==row-1)|(Var1==col&Var2==row-2 & turn_count==0)) ~ row,
-                                       TRUE ~ as.numeric(Var2)),
-                      turn_count = case_when((Var1==col&Var2==row) ~ turn_count+1,
-                                             TRUE ~ turn_count))
-           },
-           "castle" = {},
-           "knight"={},
-           "bishop"={},
-           "queen"={},
-           "king" ={}
-    )
+    if(capture){
+      return("Capture Action Still Under Development")
+    }else{
+      switch(parsed_move[["piece"]],
+             "pawn"={
+               
+               pieces[["white_pawns"]]<<- pieces[["white_pawns"]] %>% 
+                 mutate(Var1 = case_when(((Var1==col&Var2==row-1)|(Var1==col&Var2==row-2 & turn_count==0)) ~ col,
+                                         TRUE ~ as.character(Var1)),
+                        Var2 = case_when(((Var1==col&Var2==row-1)|(Var1==col&Var2==row-2 & turn_count==0)) ~ row,
+                                         TRUE ~ as.numeric(Var2)),
+                        turn_count = case_when((Var1==col&Var2==row) ~ turn_count+1,
+                                               TRUE ~ turn_count))
+             },
+             "castle" = {},
+             "knight"={},
+             "bishop"={},
+             "queen"={},
+             "king" ={}
+      )
+    }
+    
   }else{
-    switch(parsed_move[["piece"]],
-           "pawn"={
-             pieces[["black_pawns"]]<<- pieces[["black_pawns"]] %>% 
-               mutate(Var1 = case_when(((Var1==col&Var2==row+1)|(Var1==col&Var2==row+2 & turn_count==0)) ~ col,
-                                       TRUE ~ as.character(Var1)),
-                      Var2 = case_when(((Var1==col&Var2==row+1)|(Var1==col&Var2==row+2 & turn_count==0)) ~ row,
-                                       TRUE ~ as.numeric(Var2)),
-                      turn_count = case_when((Var1==col&Var2==row) ~ turn_count+1,
-                                             TRUE ~ turn_count))
-           },
-           "castle" = {},
-           "knight"={},
-           "bishop"={},
-           "queen"={},
-           "king" ={}
-    )
+    if(capture){
+      return("Capture Action Still Under Development")
+    }else{
+      switch(parsed_move[["piece"]],
+             "pawn"={
+               pieces[["black_pawns"]]<<- pieces[["black_pawns"]] %>% 
+                 mutate(Var1 = case_when(((Var1==col&Var2==row+1)|(Var1==col&Var2==row+2 & turn_count==0)) ~ col,
+                                         TRUE ~ as.character(Var1)),
+                        Var2 = case_when(((Var1==col&Var2==row+1)|(Var1==col&Var2==row+2 & turn_count==0)) ~ row,
+                                         TRUE ~ as.numeric(Var2)),
+                        turn_count = case_when((Var1==col&Var2==row) ~ turn_count+1,
+                                               TRUE ~ turn_count))
+             },
+             "castle" = {},
+             "knight"={},
+             "bishop"={},
+             "queen"={},
+             "king" ={}
+      )
+    }
+   
   }
   
 }

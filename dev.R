@@ -1,7 +1,7 @@
 # Chess Board in R
 
 library(ggplot2)
-
+library(dplyr)
 cols <- letters[1:8]
 rows <- 1:8
 
@@ -388,7 +388,13 @@ update_board<- function(player,parsed_move){
   if(player=="White"){
     switch(parsed_move[["piece"]],
            "pawn"={
-             pieces[["white_pawns"]]
+             
+             pieces[["white_pawns"]]<- pieces[["white_pawns"]] %>% 
+                                        mutate(Var1 = case_when(((Var1==col&Var2==row-1)|(Var1==col&Var2==row-2 & turn_count==0)) ~ col,
+                                                                TRUE ~ Var1),
+                                               Var2 = case_when(((Var1==col&Var2==row-1)|
+                                                                (Var1==col&Var2==row-2 & turn_count==0)) ~ row,
+                                                                 TRUE ~ Var2))
            },
            "castle" = {},
            "knight"={},
@@ -398,7 +404,15 @@ update_board<- function(player,parsed_move){
     )
   }else{
     switch(parsed_move[["piece"]],
-           "pawn"={},
+           "pawn"={
+             pieces[["black_pawns"]]<- pieces[["black_pawns"]] %>% 
+               mutate(Var1 = case_when((Var1==col&Var2==row+1)|
+                                         (Var1==col&Var2==row+2 & turn_count==0) ~ col,
+                                       TRUE ~ Var1),
+                      Var2 = case_when((Var1==col&Var2==row+1)|
+                                         (Var1==col&Var2==row+2 & turn_count==0) ~ row,
+                                       TRUE ~ Var2))
+           },
            "castle" = {},
            "knight"={},
            "bishop"={},
@@ -426,10 +440,11 @@ play_game <- function() {
     }
     parsed_move <- parse_move(player,move)
     
+    update_board(player,parsed_move)
     # Update the game
     # plot_board(board,pieces)|> 
     #   print() 
-    print(parsed_move)
+    
   }
   cat("Game Concluded")
 }

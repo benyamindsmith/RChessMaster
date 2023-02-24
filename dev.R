@@ -208,6 +208,7 @@ check_move_legality<- function(player,parsed_move){
                cat("Error: More than one piece found. This is an issue with code logic")
                return(FALSE)
              }else{
+               # Check turn count
                # Update data and return to TRUE
                return(TRUE)
              }
@@ -389,12 +390,15 @@ update_board<- function(player,parsed_move){
     switch(parsed_move[["piece"]],
            "pawn"={
              
-             pieces[["white_pawns"]]<- pieces[["white_pawns"]] %>% 
-                                        mutate(Var1 = case_when(((Var1==col&Var2==row-1)|(Var1==col&Var2==row-2 & turn_count==0)) ~ col,
-                                                                TRUE ~ Var1),
-                                               Var2 = case_when(((Var1==col&Var2==row-1)|
-                                                                (Var1==col&Var2==row-2 & turn_count==0)) ~ row,
-                                                                 TRUE ~ Var2))
+             pieces[["white_pawns"]]<<- pieces[["white_pawns"]] %>% 
+               mutate(Var1 = case_when(((Var1==col&Var2==row-1)|(Var1==col&Var2==row-2 & turn_count==0)) ~ col,
+                                       TRUE ~ as.character(Var1)),
+                      Var2 = case_when(((Var1==col&Var2==row-1)|
+                                          (Var1==col&Var2==row-2 & turn_count==0)) ~ row,
+                                       TRUE ~ as.numeric(Var2)),
+                      turn_count = case_when(((Var1==col&Var2==row-1)|
+                                                (Var1==col&Var2==row-2 & turn_count==0)) ~ turn_count+1,
+                                             TRUE ~ as.numeric(turn_count)) )
            },
            "castle" = {},
            "knight"={},
@@ -405,13 +409,16 @@ update_board<- function(player,parsed_move){
   }else{
     switch(parsed_move[["piece"]],
            "pawn"={
-             pieces[["black_pawns"]]<- pieces[["black_pawns"]] %>% 
+             pieces[["black_pawns"]]<<- pieces[["black_pawns"]] %>% 
                mutate(Var1 = case_when((Var1==col&Var2==row+1)|
                                          (Var1==col&Var2==row+2 & turn_count==0) ~ col,
-                                       TRUE ~ Var1),
+                                       TRUE ~ as.character(Var1)),
                       Var2 = case_when((Var1==col&Var2==row+1)|
                                          (Var1==col&Var2==row+2 & turn_count==0) ~ row,
-                                       TRUE ~ Var2))
+                                       TRUE ~ as.numeric(Var2)),
+                      turn_count = case_when(((Var1==col&Var2==row+1)|
+                                                (Var1==col&Var2==row+2 & turn_count==0)) ~ turn_count+1,
+                                             TRUE ~ as.numeric(turn_count)))
            },
            "castle" = {},
            "knight"={},
@@ -428,7 +435,7 @@ play_game <- function() {
   quit <- FALSE
   
   # Initialize the game
-  # plot_board(board,pieces) |> print() 
+  plot_board(board,pieces) |> print() 
   
   while (quit == FALSE) {
     turn <- turn + 1
@@ -441,9 +448,9 @@ play_game <- function() {
     parsed_move <- parse_move(player,move)
     
     update_board(player,parsed_move)
-    # Update the game
-    # plot_board(board,pieces)|> 
-    #   print() 
+    
+    plot_board(board,pieces)|> 
+       print() 
     
   }
   cat("Game Concluded")

@@ -14,131 +14,134 @@ board <- expand.grid(cols,rows) |>
   })
 
 # For filtering
-pieces <- {
-  list(
-    white_pawns = board |>
-      subset(Var2 == 2) |>
-      within({
-        piece = "white_pawn"
-        no = 1:8
-        alive = TRUE
-        check=NA
-        position = list(c("a",2), c("b",2),c("c",2),c("d",2),c("e",2),c("f",2),c("g",2),c("h",2))
-        turn_count = 0
-      }),
-    black_pawns = board |>
-      subset(Var2 == 7) |>
-      within({
-        piece = "black_pawn"
-        no = 1:8
-        alive = TRUE
-        check=NA
-        position = list(c("a",7), c("b",7),c("c",7),c("d",7),c("e",7),c("f",7),c("g",7),c("h",7))
-        turn_count = 0
-      }),
-    white_castles = board |>
-      subset(Var2 == 1 & Var1 %in% letters[c(1, 8)]) |>
-      within({
-        piece = "white_castle"
-        no = 1:2
-        alive = TRUE
-        check=NA
-        position = list(c("a",1), c("h",1))
-        turn_count = 0
-      }),
-    black_castles = board |>
-      subset(Var2 == 8 & Var1 %in% letters[c(1, 8)]) |>
-      within({
-        piece = "black_castle"
-        no = 1:2
-        alive = TRUE
-        check=NA
-        position = list(c("a",8), c("h",8))
-        turn_count = 0
-      }),
-    white_knights = board |>
-      subset(Var2 == 1 & Var1 %in% letters[c(2, 7)]) |>
-      within({
-        piece = "white_knights"
-        no = 1:2
-        alive = TRUE
-        check=NA
-        position = list(c("b",1), c("g",1))
-        turn_count =0
-      }),
-    black_knights = board |>
-      subset(Var2 == 8 & Var1 %in% letters[c(2, 7)]) |>
-      within({
-        piece = "black_knights"
-        no = 1:2
-        alive = TRUE
-        check=NA
-        position = list(c("b",8), c("g",8))
-        turn_count =0
-      }),
-    white_bishops = board |>
-      subset(Var2 == 1 & Var1 %in% letters[c(3, 6)]) |>
-      within({
-        piece="white_bishop"
-        no = 1:2
-        alive = TRUE
-        check=NA
-        position = list(c("c",1), c("f",1))
-        turn_count =0
-      }),
-    black_bishops = board |>
-      subset(Var2 == 8 & Var1 %in% letters[c(3, 6)]) |>
-      within({
-        piece = "black_bishop"
-        no = 1:2
-        alive=TRUE
-        check=NA
-        position = list(c("c",8), c("f",8))
-        turn_count=0
-      }),
-    white_queen = board |> 
-      subset(Var2 == 1 & Var1 == letters[4])|>
-      within({
-        piece="white_queen"
-        no = 1
-        alive=TRUE
-        check=NA
-        position = list(c("d",1))
-        turn_count=0
-      }),
-    black_queen = board |> 
-      subset(Var2 == 8 & Var1 == letters[4]) |>
-      within({
-        piece="black_queen"
-        no = 1
-        alive=TRUE
-        check=NA
-        position = list(c("d",8))
-        turn_count=0
-      }),
-    white_king = board |> 
-      subset(Var2 == 1 & Var1 == letters[5]) |>
-      within({
-        piece = "white_king"
-        no = 1
-        alive=TRUE
-        check=FALSE
-        position = list(c("e",1))
-        turn_count=0
-      }),
-    black_king = board |> 
-      subset(Var2 == 8 & Var1 == letters[5]) |>
-      within({
-        piece="black_king"
-        no = 1
-        position = list(c("d",8))
-        alive=TRUE
-        check=FALSE
-        turn_count=0
-      })
-  )
-}
 
+
+reset_board <- function(){
+  pieces <<- {
+    list(
+      white_pawns = board |>
+        subset(Var2 == 2) |>
+        within({
+          piece = "white_pawn"
+          no = 1:8
+          alive = TRUE
+          check=NA
+          position = list(c("a",2), c("b",2),c("c",2),c("d",2),c("e",2),c("f",2),c("g",2),c("h",2))
+          turn_count = 0
+        }),
+      black_pawns = board |>
+        subset(Var2 == 7) |>
+        within({
+          piece = "black_pawn"
+          no = 1:8
+          alive = TRUE
+          check=NA
+          position = list(c("a",7), c("b",7),c("c",7),c("d",7),c("e",7),c("f",7),c("g",7),c("h",7))
+          turn_count = 0
+        }),
+      white_castles = board |>
+        subset(Var2 == 1 & Var1 %in% letters[c(1, 8)]) |>
+        within({
+          piece = "white_castle"
+          no = 1:2
+          alive = TRUE
+          check=NA
+          position = list(c("a",1), c("h",1))
+          turn_count = 0
+        }),
+      black_castles = board |>
+        subset(Var2 == 8 & Var1 %in% letters[c(1, 8)]) |>
+        within({
+          piece = "black_castle"
+          no = 1:2
+          alive = TRUE
+          check=NA
+          position = list(c("a",8), c("h",8))
+          turn_count = 0
+        }),
+      white_knights = board |>
+        subset(Var2 == 1 & Var1 %in% letters[c(2, 7)]) |>
+        within({
+          piece = "white_knights"
+          no = 1:2
+          alive = TRUE
+          check=NA
+          position = list(c("b",1), c("g",1))
+          turn_count =0
+        }),
+      black_knights = board |>
+        subset(Var2 == 8 & Var1 %in% letters[c(2, 7)]) |>
+        within({
+          piece = "black_knights"
+          no = 1:2
+          alive = TRUE
+          check=NA
+          position = list(c("b",8), c("g",8))
+          turn_count =0
+        }),
+      white_bishops = board |>
+        subset(Var2 == 1 & Var1 %in% letters[c(3, 6)]) |>
+        within({
+          piece="white_bishop"
+          no = 1:2
+          alive = TRUE
+          check=NA
+          position = list(c("c",1), c("f",1))
+          turn_count =0
+        }),
+      black_bishops = board |>
+        subset(Var2 == 8 & Var1 %in% letters[c(3, 6)]) |>
+        within({
+          piece = "black_bishop"
+          no = 1:2
+          alive=TRUE
+          check=NA
+          position = list(c("c",8), c("f",8))
+          turn_count=0
+        }),
+      white_queen = board |> 
+        subset(Var2 == 1 & Var1 == letters[4])|>
+        within({
+          piece="white_queen"
+          no = 1
+          alive=TRUE
+          check=NA
+          position = list(c("d",1))
+          turn_count=0
+        }),
+      black_queen = board |> 
+        subset(Var2 == 8 & Var1 == letters[4]) |>
+        within({
+          piece="black_queen"
+          no = 1
+          alive=TRUE
+          check=NA
+          position = list(c("d",8))
+          turn_count=0
+        }),
+      white_king = board |> 
+        subset(Var2 == 1 & Var1 == letters[5]) |>
+        within({
+          piece = "white_king"
+          no = 1
+          alive=TRUE
+          check=FALSE
+          position = list(c("e",1))
+          turn_count=0
+        }),
+      black_king = board |> 
+        subset(Var2 == 8 & Var1 == letters[5]) |>
+        within({
+          piece="black_king"
+          no = 1
+          position = list(c("d",8))
+          alive=TRUE
+          check=FALSE
+          turn_count=0
+        })
+    )
+  }
+}
 ############################################
 # These datasets are not used for anything presently 
 # For reference
@@ -152,7 +155,7 @@ white_pieces <-subset(pieces_dataset, grepl("^white", piece))
 # black pieces
 
 
-white_pieces <-subset(pieces_dataset, grepl("^black", piece))
+black_pieces <-subset(pieces_dataset, grepl("^black", piece))
 
 ################################################
 
@@ -209,8 +212,13 @@ check_move_legality<- function(player,parsed_move){
                return(FALSE)
              }else{
                # Check turn count
+               if(pawn_selected[["turn_count"]]==0){
+                 return(TRUE)
+               } else if(pawn_selected[["Var2"]]< row-1){
+                 cat("Error: illegal pawn move")
+               }
                # Update data and return to TRUE
-               return(TRUE)
+               
              }
            },
            
@@ -393,12 +401,10 @@ update_board<- function(player,parsed_move){
              pieces[["white_pawns"]]<<- pieces[["white_pawns"]] %>% 
                mutate(Var1 = case_when(((Var1==col&Var2==row-1)|(Var1==col&Var2==row-2 & turn_count==0)) ~ col,
                                        TRUE ~ as.character(Var1)),
-                      Var2 = case_when(((Var1==col&Var2==row-1)|
-                                          (Var1==col&Var2==row-2 & turn_count==0)) ~ row,
+                      Var2 = case_when(((Var1==col&Var2==row-1)|(Var1==col&Var2==row-2 & turn_count==0)) ~ row,
                                        TRUE ~ as.numeric(Var2)),
-                      turn_count = case_when(((Var1==col&Var2==row-1)|
-                                                (Var1==col&Var2==row-2 & turn_count==0)) ~ turn_count+1,
-                                             TRUE ~ as.numeric(turn_count)) )
+                      turn_count = case_when((Var1==col&Var2==row) ~ turn_count+1,
+                                             TRUE ~ turn_count))
            },
            "castle" = {},
            "knight"={},
@@ -409,16 +415,13 @@ update_board<- function(player,parsed_move){
   }else{
     switch(parsed_move[["piece"]],
            "pawn"={
-             pieces[["black_pawns"]]<<- pieces[["black_pawns"]] %>% 
-               mutate(Var1 = case_when((Var1==col&Var2==row+1)|
-                                         (Var1==col&Var2==row+2 & turn_count==0) ~ col,
+             pieces[["black_pawns"]]<<- pieces[["white_pawns"]] %>% 
+               mutate(Var1 = case_when(((Var1==col&Var2==row+1)|(Var1==col&Var2==row+2 & turn_count==0)) ~ col,
                                        TRUE ~ as.character(Var1)),
-                      Var2 = case_when((Var1==col&Var2==row+1)|
-                                         (Var1==col&Var2==row+2 & turn_count==0) ~ row,
+                      Var2 = case_when(((Var1==col&Var2==row+1)|(Var1==col&Var2==row+2 & turn_count==0)) ~ row,
                                        TRUE ~ as.numeric(Var2)),
-                      turn_count = case_when(((Var1==col&Var2==row+1)|
-                                                (Var1==col&Var2==row+2 & turn_count==0)) ~ turn_count+1,
-                                             TRUE ~ as.numeric(turn_count)))
+                      turn_count = case_when((Var1==col&Var2==row) ~ turn_count+1,
+                                             TRUE ~ turn_count))
            },
            "castle" = {},
            "knight"={},

@@ -142,9 +142,11 @@ reset_board <- function(){
     )
   }
 }
+
 ############################################
 # These datasets are not used for anything presently 
 # For reference
+reset_board()
 pieces_dataset <- do.call(rbind, pieces) |>
                   subset(select=-color)
 

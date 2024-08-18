@@ -5,6 +5,12 @@ An experimental chess engine written in R.
 ![image](https://github.com/user-attachments/assets/6e71a629-7983-4c50-aa15-aa26fe9ee4ea)
 
 
+# Installing this Package
+
+```r
+devtools::install_github("benyamindsmith/rChess")
+```
+
 <details>
 <summary>
 <h3>Description</h3>

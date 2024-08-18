@@ -1,9 +1,10 @@
 # rChess
 
-An experimental chess engine written in R. 
+An experimental chess engine written in R with [{raylibr}](https://github.com/jeroenjanssens/raylibr)
 
-![image](https://github.com/user-attachments/assets/6e71a629-7983-4c50-aa15-aa26fe9ee4ea)
-
+<a>
+<img src= https://github.com/user-attachments/assets/6e71a629-7983-4c50-aa15-aa26fe9ee4ea width =50%>
+</a>
 
 # Installing this Package
 
@@ -11,12 +12,13 @@ An experimental chess engine written in R.
 devtools::install_github("benyamindsmith/rChess")
 ```
 
-<details>
-<summary>
-<h3>Description</h3>
-</summary>
+# Play a new game
 
-Right now only liberal piece movement is available.
-</details>
+```r
+rChess::new_game()
+```
 
-</details>
+# Similar Projects
+
+- [rchess](https://github.com/jbkunst/rchess) (Yes I know, I need to change this package name)
+

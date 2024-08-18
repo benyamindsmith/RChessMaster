@@ -35,14 +35,14 @@ is_valid_move <- function(board, piece, start_pos, end_pos) {
   } else if (piece == "white_rook" || piece == "black_rook") {
     if (delta_row == 0 || delta_col == 0) {
       # Check for clear path
-      if (delta_row == 0) {
+      if (delta_row == 0 && abs(end_col - start_col) > 1) {
         step <- sign(end_col - start_col)
         for (c in seq(start_col + step, end_col - step, step)) {
           if (board[start_row, c] != "") {
             return(FALSE)
           }
         }
-      } else if (delta_col == 0) {
+      } else if (delta_col == 0 && abs(end_row - start_row) > 1) {
         step <- sign(end_row - start_row)
         for (r in seq(start_row + step, end_row - step, step)) {
           if (board[r, start_col] != "") {
@@ -61,11 +61,13 @@ is_valid_move <- function(board, piece, start_pos, end_pos) {
   } else if (piece == "white_bishop" || piece == "black_bishop") {
     if (delta_row == delta_col) {
       # Check for clear path
-      row_step <- sign(end_row - start_row)
-      col_step <- sign(end_col - start_col)
-      for (i in 1:(delta_row - 1)) {
-        if (board[start_row + i * row_step, start_col + i * col_step] != "") {
-          return(FALSE)
+      if (delta_row > 1) {
+        row_step <- sign(end_row - start_row)
+        col_step <- sign(end_col - start_col)
+        for (i in 1:(delta_row - 1)) {
+          if (board[start_row + i * row_step, start_col + i * col_step] != "") {
+            return(FALSE)
+          }
         }
       }
       return(TRUE)
@@ -74,7 +76,7 @@ is_valid_move <- function(board, piece, start_pos, end_pos) {
   } else if (piece == "white_queen" || piece == "black_queen") {
     if (delta_row == delta_col || delta_row == 0 || delta_col == 0) {
       # Check for clear path (combine rook and bishop logic)
-      if (delta_row == delta_col) {
+      if (delta_row == delta_col && delta_row > 1) {
         row_step <- sign(end_row - start_row)
         col_step <- sign(end_col - start_col)
         for (i in 1:(delta_row - 1)) {
@@ -82,14 +84,14 @@ is_valid_move <- function(board, piece, start_pos, end_pos) {
             return(FALSE)
           }
         }
-      } else if (delta_row == 0) {
+      } else if (delta_row == 0 && abs(end_col - start_col) > 1) {
         step <- sign(end_col - start_col)
         for (c in seq(start_col + step, end_col - step, step)) {
           if (board[start_row, c] != "") {
             return(FALSE)
           }
         }
-      } else if (delta_col == 0) {
+      } else if (delta_col == 0 && abs(end_row - start_row) > 1) {
         step <- sign(end_row - start_row)
         for (r in seq(start_row + step, end_row - step, step)) {
           if (board[r, start_col] != "") {
@@ -108,6 +110,7 @@ is_valid_move <- function(board, piece, start_pos, end_pos) {
 
   return(FALSE)
 }
+
 
 is_king_in_check <- function(board, king_position, opponent_color) {
   for (row in 1:8) {

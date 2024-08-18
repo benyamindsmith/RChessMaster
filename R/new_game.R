@@ -119,7 +119,6 @@ new_game <- function() {
         selected_pos <- NULL
       }
     }
-    print(board)
     raylibr::end_drawing()
   }
 

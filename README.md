@@ -1,4 +1,4 @@
-# RChessMaster <a href='https://github.com/benyamindsmith/rChess'><img src='https://github.com/user-attachments/assets/7587fab3-ad48-4bed-be5f-27041420b7f5' align="right" height="300" /></a>
+# RChessMaster <a href='https://github.com/benyamindsmith/rChess'><img src='https://github.com/user-attachments/assets/56ffa648-725d-45c5-9672-b0031cb23551' align="right" height="300" /></a>
 
 An experimental chess engine written in R with [{raylibr}](https://github.com/jeroenjanssens/raylibr)
 

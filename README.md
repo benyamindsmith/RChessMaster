@@ -10,18 +10,17 @@ An experimental chess engine written in R with [{raylibr}](https://github.com/je
 # Installing this Package 
 
 ```r
-devtools::install_github("benyamindsmith/rChess")
+devtools::install_github("benyamindsmith/RChessMaster")
 ```
 
 # Play a new game
 
 ```r
-rChess::new_game()
+RChessMaster::new_game()
 ```
 
 
 
 # Similar Projects
 
-- [rchess](https://github.com/jbkunst/rchess) (Yes I know, I need to change this package name)
-
+- [rchess](https://github.com/jbkunst/rchess)

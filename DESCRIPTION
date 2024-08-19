@@ -1,12 +1,13 @@
 Package: rChess
 Type: Package
-Title: What the Package Does (Title Case)
+Title: An experimental chess engine written in R with raylibr
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Author: Benjamin Smith
+Maintainer: Benjamin Smith <benyamindsmith@gmail.com>
+Description: A chess game implementation in R using bindings for raylib. Features a graphical chessboard where users can interact by selecting and moving pieces, with the game logic and enforcing standard chess rules.
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.3
+Imports: raylibr
+Remotes: jeroenjanssens/raylibr

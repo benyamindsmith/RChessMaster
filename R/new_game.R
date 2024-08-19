@@ -11,6 +11,7 @@ new_game <- function() {
   selected_piece <- NULL
   selected_pos <- NULL
   valid_moves <- list()
+  current_turn <- "white"  # Track whose turn it is
 
   # Board matrix to keep track of piece positions
   board <- matrix("", nrow = 8, ncol = 8)
@@ -32,14 +33,17 @@ new_game <- function() {
                    paste0(system.file(package = "rChess"), "/png") |>
                      list.files())
 
+  icon <- paste0(system.file(package = "rChess"), "/assets/logo.png")|>
+    raylibr::load_image()
   # Define Window
   raylibr::init_window(width = screen_width,
                        height = screen_height,
                        title = "rChess")
   # Add window icon
-  #raylibr::set_window_icon()
+  raylibr::set_window_icon(icon)
   # Load pieces as textures
-  piece_textures <- list(ure_from_image(),
+  piece_textures <- list(
+    white_bishop = raylibr::load_image(pieces[[7]]) |> raylibr::load_texture_from_image(),
     white_king = raylibr::load_image(pieces[[8]]) |> raylibr::load_texture_from_image(),
     white_knight = raylibr::load_image(pieces[[9]]) |> raylibr::load_texture_from_image(),
     white_pawn = raylibr::load_image(pieces[[10]]) |> raylibr::load_texture_from_image(),
@@ -163,7 +167,7 @@ new_game <- function() {
         valid_moves <- list()
 
         # Calculate valid moves
-        if (selected_piece != "") {
+        if (selected_piece != "" && startsWith(selected_piece, current_turn)) {
           for (r in 1:8) {
             for (c in 1:8) {
               if (rChess:::is_valid_move(board, selected_piece, selected_pos, c(r, c))) {
@@ -171,13 +175,18 @@ new_game <- function() {
               }
             }
           }
+        } else {
+          selected_piece <- NULL
+          selected_pos <- NULL
         }
       } else {
         # Moving the selected piece
-        if (selected_piece != "" &&
-            rChess:::is_valid_move(board, selected_piece, selected_pos, c(row, col))) {
+        if (selected_piece != "" && rChess:::is_valid_move(board, selected_piece, selected_pos, c(row, col))) {
           board[row, col] <- selected_piece
           board[selected_pos[1], selected_pos[2]] <- ""
+
+          # Switch turn after a valid move
+          current_turn <- ifelse(current_turn == "white", "black", "white")
         }
         selected_piece <- NULL
         selected_pos <- NULL
@@ -190,3 +199,4 @@ new_game <- function() {
 
   raylibr::close_window()
 }
+

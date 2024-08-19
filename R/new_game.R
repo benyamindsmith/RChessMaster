@@ -29,16 +29,16 @@ new_game <- function() {
   board[8, 5] <- "black_king"
 
   # Pieces
-  pieces <- paste0(paste0(system.file(package = "rChess"), "/png/"),
-                   paste0(system.file(package = "rChess"), "/png") |>
+  pieces <- paste0(paste0(system.file(package = "RChessMaster"), "/png/"),
+                   paste0(system.file(package = "RChessMaster"), "/png") |>
                      list.files())
 
-  icon <- paste0(system.file(package = "rChess"), "/assets/logo.png")|>
+  icon <- paste0(system.file(package = "RChessMasterMaster"), "/assets/logo.png")|>
     raylibr::load_image()
   # Define Window
   raylibr::init_window(width = screen_width,
                        height = screen_height,
-                       title = "rChess")
+                       title = "RChessMaster")
   # Add window icon
   raylibr::set_window_icon(icon)
   # Load pieces as textures
@@ -65,14 +65,14 @@ new_game <- function() {
     black_king_pos <- which(board == "black_king", arr.ind = TRUE)[1, ]
 
     # Determine if kings are in check
-    white_king_in_check <- rChess:::is_king_in_check(board, white_king_pos, "black")
-    black_king_in_check <- rChess:::is_king_in_check(board, black_king_pos, "white")
+    white_king_in_check <- RChessMaster:::is_king_in_check(board, white_king_pos, "black")
+    black_king_in_check <- RChessMaster:::is_king_in_check(board, black_king_pos, "white")
 
     # Determine if kings are in checkmate (simplified)
     white_king_in_checkmate <- white_king_in_check &&
-      rChess:::is_checkmate(board, white_king_pos, "white", "black")
+      RChessMaster:::is_checkmate(board, white_king_pos, "white", "black")
     black_king_in_checkmate <- black_king_in_check &&
-      rChess:::is_checkmate(board, black_king_pos, "black", "white")
+      RChessMaster:::is_checkmate(board, black_king_pos, "black", "white")
 
     # Draw the board
     for (row in 0:(board_size - 1)) {
@@ -170,7 +170,7 @@ new_game <- function() {
         if (selected_piece != "" && startsWith(selected_piece, current_turn)) {
           for (r in 1:8) {
             for (c in 1:8) {
-              if (rChess:::is_valid_move(board, selected_piece, selected_pos, c(r, c))) {
+              if (RChessMaster:::is_valid_move(board, selected_piece, selected_pos, c(r, c))) {
                 valid_moves <- append(valid_moves, list(c(r, c)))
               }
             }
@@ -181,7 +181,7 @@ new_game <- function() {
         }
       } else {
         # Moving the selected piece
-        if (selected_piece != "" && rChess:::is_valid_move(board, selected_piece, selected_pos, c(row, col))) {
+        if (selected_piece != "" && RChessMaster:::is_valid_move(board, selected_piece, selected_pos, c(row, col))) {
           board[row, col] <- selected_piece
           board[selected_pos[1], selected_pos[2]] <- ""
 

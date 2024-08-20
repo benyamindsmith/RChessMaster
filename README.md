@@ -15,6 +15,9 @@ devtools::install_github("benyamindsmith/RChessMaster")
 
 # Play a new game
 
+Presently the game does not have any AI enabled, so you (or someone else sitting next to you) are in control of both the white and black pieces seqentially. 
+
+
 ```r
 RChessMaster::new_game()
 ```

@@ -1,4 +1,4 @@
-Package: rChess
+Package: RChessMaster
 Type: Package
 Title: An experimental chess engine written in R with raylibr
 Version: 0.1.0

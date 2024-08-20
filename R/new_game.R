@@ -2,7 +2,6 @@
 #'
 #' @export
 
-
 new_game <- function() {
   screen_width <- 800
   screen_height <- 800
@@ -29,18 +28,21 @@ new_game <- function() {
   board[8, 5] <- "black_king"
 
   # Pieces
-  pieces <- paste0(paste0(system.file(package = "RChessMaster"), "/png/"),
-                   paste0(system.file(package = "RChessMaster"), "/png") |>
-                     list.files())
+  pieces <- paste0(
+    paste0(system.file(package = "RChessMaster"), "/png/"),
+    paste0(system.file(package = "RChessMaster"), "/png") |>
+      list.files()
+  )
 
-  icon <- paste0(system.file(package = "RChessMasterMaster"), "/assets/logo.png")|>
+  icon <- paste0(system.file(package = "RChessMaster"), "/assets/logo.png")|>
     raylibr::load_image()
   # Define Window
   raylibr::init_window(width = screen_width,
                        height = screen_height,
                        title = "RChessMaster")
-  # Add window icon
   raylibr::set_window_icon(icon)
+
+
   # Load pieces as textures
   piece_textures <- list(
     white_bishop = raylibr::load_image(pieces[[7]]) |> raylibr::load_texture_from_image(),
@@ -69,87 +71,41 @@ new_game <- function() {
     black_king_in_check <- RChessMaster:::is_king_in_check(board, black_king_pos, "white")
 
     # Determine if kings are in checkmate (simplified)
-    white_king_in_checkmate <- white_king_in_check &&
-      RChessMaster:::is_checkmate(board, white_king_pos, "white", "black")
-    black_king_in_checkmate <- black_king_in_check &&
-      RChessMaster:::is_checkmate(board, black_king_pos, "black", "white")
+    white_king_in_checkmate <- white_king_in_check && RChessMaster:::is_checkmate(board, white_king_pos, "white", "black")
+    black_king_in_checkmate <- black_king_in_check && RChessMaster:::is_checkmate(board, black_king_pos, "black", "white")
 
     # Draw the board
     for (row in 0:(board_size - 1)) {
       for (col in 0:(board_size - 1)) {
         if ((row + col) %% 2 == 0) {
-          raylibr::draw_rectangle(
-            col * square_size,
-            row * square_size,
-            square_size,
-            square_size,
-            raylibr::color(240, 217, 181, 255)
-          )
+          raylibr::draw_rectangle(col * square_size, row * square_size, square_size, square_size, raylibr::color(240, 217, 181, 255))
         } else {
-          raylibr::draw_rectangle(
-            col * square_size,
-            row * square_size,
-            square_size,
-            square_size,
-            raylibr::color(181, 136, 99, 255)
-          )
+          raylibr::draw_rectangle(col * square_size, row * square_size, square_size, square_size, raylibr::color(181, 136, 99, 255))
         }
 
         # Highlight the selected square
-        if (!is.null(selected_pos) &&
-            selected_pos[1] == 8 - row && selected_pos[2] == col + 1) {
-          raylibr::draw_rectangle(
-            col * square_size,
-            row * square_size,
-            square_size,
-            square_size,
-            raylibr::color(0, 255, 0, 100)
-          )  # Transparent green
+        if (!is.null(selected_pos) && selected_pos[1] == 8 - row && selected_pos[2] == col + 1) {
+          raylibr::draw_rectangle(col * square_size, row * square_size, square_size, square_size, raylibr::color(0, 255, 0, 100))  # Transparent green
         }
 
         # Highlight the valid moves in yellow
         for (move in valid_moves) {
           if (move[1] == 8 - row && move[2] == col + 1) {
-            raylibr::draw_rectangle(
-              col * square_size,
-              row * square_size,
-              square_size,
-              square_size,
-              raylibr::color(255, 255, 0, 100)
-            )  # Transparent yellow
+            raylibr::draw_rectangle(col * square_size, row * square_size, square_size, square_size, raylibr::color(255, 255, 0, 100))  # Transparent yellow
           }
         }
 
         # Highlight the king's square in red if in check
-        if (white_king_in_check &&
-            white_king_pos[1] == 8 - row && white_king_pos[2] == col + 1) {
-          raylibr::draw_rectangle(
-            col * square_size,
-            row * square_size,
-            square_size,
-            square_size,
-            raylibr::color(255, 0, 0, 100)
-          )  # Transparent red
-        } else if (black_king_in_check &&
-                   black_king_pos[1] == 8 - row && black_king_pos[2] == col + 1) {
-          raylibr::draw_rectangle(
-            col * square_size,
-            row * square_size,
-            square_size,
-            square_size,
-            raylibr::color(255, 0, 0, 100)
-          )  # Transparent red
+        if (white_king_in_check && white_king_pos[1] == 8 - row && white_king_pos[2] == col + 1) {
+          raylibr::draw_rectangle(col * square_size, row * square_size, square_size, square_size, raylibr::color(255, 0, 0, 100))  # Transparent red
+        } else if (black_king_in_check && black_king_pos[1] == 8 - row && black_king_pos[2] == col + 1) {
+          raylibr::draw_rectangle(col * square_size, row * square_size, square_size, square_size, raylibr::color(255, 0, 0, 100))  # Transparent red
         }
 
         # Draw the piece at the current position
         piece <- board[8 - row, col + 1]
         if (piece != "") {
-          raylibr::draw_texture(
-            piece_textures[[piece]],
-            col * square_size - 15,
-            row * square_size - 20,
-            tint = raylibr::as_color("white")
-          )
+          raylibr::draw_texture(piece_textures[[piece]], col * square_size - 15, row * square_size - 20, tint = raylibr::as_color("white"))
         }
       }
     }
@@ -171,7 +127,17 @@ new_game <- function() {
           for (r in 1:8) {
             for (c in 1:8) {
               if (RChessMaster:::is_valid_move(board, selected_piece, selected_pos, c(r, c))) {
-                valid_moves <- append(valid_moves, list(c(r, c)))
+                # Make a temporary move to check if the king is still in check
+                temp_board <- board
+                temp_board[r, c] <- selected_piece
+                temp_board[selected_pos[1], selected_pos[2]] <- ""
+
+                king_pos <- if (current_turn == "white") which(temp_board == "white_king", arr.ind = TRUE)[1, ] else which(temp_board == "black_king", arr.ind = TRUE)[1, ]
+                king_in_check <- RChessMaster:::is_king_in_check(temp_board, king_pos, if (current_turn == "white") "black" else "white")
+
+                if (!king_in_check) {
+                  valid_moves <- append(valid_moves, list(c(r, c)))
+                }
               }
             }
           }
@@ -181,7 +147,7 @@ new_game <- function() {
         }
       } else {
         # Moving the selected piece
-        if (selected_piece != "" && RChessMaster:::is_valid_move(board, selected_piece, selected_pos, c(row, col))) {
+        if (selected_piece != "" && any(sapply(valid_moves, function(m) all(m == c(row, col))))) {
           board[row, col] <- selected_piece
           board[selected_pos[1], selected_pos[2]] <- ""
 
@@ -199,4 +165,3 @@ new_game <- function() {
 
   raylibr::close_window()
 }
-

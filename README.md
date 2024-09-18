@@ -27,3 +27,9 @@ RChessMaster::new_game()
 # Similar Projects
 
 - [rchess](https://github.com/jbkunst/rchess)
+
+# TODO
+
+- [ ] Rook Castling
+- [ ] En-Pessant
+- [ ] AI Opponent (minimax)
